@@ -1,5 +1,5 @@
   import "./globals.css";
-import { FaInstagram, FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { SiGmail } from "react-icons/si";
 
 
@@ -16,9 +16,6 @@ import { SiGmail } from "react-icons/si";
               <div className="flex flex-row gap-3 justify-center mt-1">
                 <a href="mailto:luciusscala@gmail.com" target="_blank" rel="noopener noreferrer">
                   <SiGmail className="w-7 h-7 text-gray-700 dark:text-gray-100 hover:text-red-500 transition" title="Gmail" />
-                </a>
-                <a href="https://instagram.com/_lucius_05/" target="_blank" rel="noopener noreferrer">
-                  <FaInstagram className="w-6 h-6 text-gray-700 dark:text-gray-100 hover:text-pink-500 transition" title="Instagram" />
                 </a>
                 <a href="https://github.com/luciusscala/" target="_blank" rel="noopener noreferrer">
                   <FaGithub className="w-6 h-6 text-gray-700 dark:text-gray-100 hover:text-gray-800 transition" title="GitHub" />
