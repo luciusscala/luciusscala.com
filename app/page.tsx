@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import WaterRipple from "@/components/WaterRipple";
 
 export default function Home() {
 
   return (
     <div className="flex flex-col min-w-full min-h-svh text-white">
+      <WaterRipple />
       <main className="flex flex-grow items-center justify-center">
           <table>
             <thead>
