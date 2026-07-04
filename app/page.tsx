@@ -8,7 +8,7 @@ export default function Home() {
     <div className="flex flex-col min-w-full min-h-svh text-white">
       <WaterRipple />
       <main className="flex flex-grow items-center justify-center select-none">
-          <p>drag your mouse around :) </p>
+          <p>click and drag your mouse around :) </p>
       </main>
       <footer className="flex items-center justify-center">
           <div className="py-3 text-xs opacity-40">@ 2026 Lucius Scala</div>
