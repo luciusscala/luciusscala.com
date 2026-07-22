@@ -18,7 +18,7 @@ uniform vec3 uMouse;   // xy = sim pixels, z > 0 while pointer is held
 uniform float uRadius; // ripple radius in sim pixels
 out vec4 o;
 
-const float delta = .6;
+const float delta = 1.0;
 
 void main() {
   ivec2 c = ivec2(gl_FragCoord.xy);

@@ -6,7 +6,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-w-full min-h-svh text-white">
-      <WaterRipple />
+      <WaterRipple backgroundSrc="abstract.jpg"/>
       <main className="flex flex-grow items-center justify-center select-none">
           <p>click and drag your mouse around :) </p>
       </main>
