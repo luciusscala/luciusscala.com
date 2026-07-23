@@ -69,7 +69,22 @@ uniform sampler2D uState;
 uniform sampler2D uTex;
 uniform int uHasTex;
 uniform vec2 uRes;
+uniform float uImgAspect; // background image width / height
 out vec4 o;
+
+// Maps canvas uv (0..1) into the background image's uv space the way CSS
+// "background-size: cover; background-position: left center" would — the
+// image is always cropped to fill the canvas, never stretched, and the crop
+// stays anchored to the image's left edge so narrow (mobile) screens keep
+// more of that left portion in view.
+vec2 coverUV(vec2 uv) {
+  float canvasAspect = uRes.x / uRes.y;
+  vec2 cropSize = canvasAspect > uImgAspect
+    ? vec2(1.0, uImgAspect / canvasAspect)
+    : vec2(canvasAspect / uImgAspect, 1.0);
+  vec2 offset = vec2(0.0, (1.0 - cropSize.y) * 0.5);
+  return offset + uv * cropSize;
+}
 
 void main() {
   vec2 uv = gl_FragCoord.xy / uRes;
@@ -81,7 +96,7 @@ void main() {
 
   if (uHasTex == 1) {
     // Color = refracted background texture, exactly like the Shadertoy
-    vec3 col = texture(uTex, uv + 0.2 * data.zw).rgb + vec3(glint);
+    vec3 col = texture(uTex, coverUV(uv) + 0.2 * data.zw).rgb + vec3(glint);
     o = vec4(col, 1.0);
   } else {
     // Transparent overlay: glint only (subtract flat-water baseline
@@ -111,11 +126,14 @@ function program(gl: WebGL2RenderingContext, fs: string) {
 }
 
 export default function WaterRipple({
-  backgroundSrc,
+  backgroundImage,
 }: {
-  /** Optional: image URL to refract, exactly like iChannel1 in the Shadertoy.
+  /** Optional: an already-loaded (and ideally decoded) image to refract,
+   *  exactly like iChannel1 in the Shadertoy. Pass a fully-loaded
+   *  HTMLImageElement (e.g. after `img.decode()` resolves) so the texture
+   *  is ready on the very first frame instead of popping in later.
    *  When set, the canvas renders opaque and should sit BEHIND your content. */
-  backgroundSrc?: string;
+  backgroundImage?: HTMLImageElement;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -173,23 +191,26 @@ export default function WaterRipple({
     resize();
     window.addEventListener("resize", resize);
 
-    // Optional background texture (iChannel1)
+    // Optional background texture (iChannel1) — the image is already fully
+    // loaded/decoded by the caller, so the texture (and the aspect ratio the
+    // shader needs to crop instead of stretch it) is ready immediately,
+    // with no async pop-in.
     let bgTex: WebGLTexture | null = null;
-    if (backgroundSrc) {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        bgTex = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, bgTex);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      };
-      img.src = backgroundSrc;
+    let imgAspect = 1;
+    if (backgroundImage) {
+      imgAspect =
+        backgroundImage.naturalWidth && backgroundImage.naturalHeight
+          ? backgroundImage.naturalWidth / backgroundImage.naturalHeight
+          : 1;
+      bgTex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, bgTex);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, backgroundImage);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     }
 
     // Mouse: continuous injection while held, like iMouse.z > 1.0
@@ -250,6 +271,7 @@ export default function WaterRipple({
       gl.uniform1i(gl.getUniformLocation(renderProg, "uTex"), 1);
       gl.uniform1i(gl.getUniformLocation(renderProg, "uHasTex"), bgTex ? 1 : 0);
       gl.uniform2f(gl.getUniformLocation(renderProg, "uRes"), canvas.width, canvas.height);
+      gl.uniform1f(gl.getUniformLocation(renderProg, "uImgAspect"), imgAspect);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
 
       raf = requestAnimationFrame(frame);
@@ -264,13 +286,13 @@ export default function WaterRipple({
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onUp);
     };
-  }, [backgroundSrc]);
+  }, [backgroundImage]);
 
   return (
     <canvas
       ref={canvasRef}
       className={`pointer-events-none fixed inset-0 h-svh w-full ${
-        backgroundSrc ? "-z-10" : "z-50"
+        backgroundImage ? "-z-10" : "z-50"
       }`}
     />
   );
