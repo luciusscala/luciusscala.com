@@ -28,6 +28,7 @@ const PROJECTS: Project[] = [
   {
     name: "Project Three",
     links: [
+      
       { label: "Code", href: "#" },
       { label: "Paper", href: "#" },
     ],
@@ -68,14 +69,14 @@ export default function Home() {
   }, [bgImage]);
 
   return (
-    <div className="min-h-svh w-full font-serif text-white">
+    <div className="h-svh w-full overflow-hidden font-serif text-white">
       {/* Same-tone placeholder shown until the image has fully loaded. */}
       <div className="fixed inset-0 -z-20" style={{ backgroundColor: BACKGROUND_FALLBACK }} />
 
       {bgImage && <WaterRipple backgroundImage={bgImage} />}
 
       <div
-        className={`flex min-h-svh w-full flex-col transition-opacity duration-700 ease-out ${
+        className={`flex h-svh w-full flex-col overflow-hidden transition-opacity duration-700 ease-out ${
           visible ? "opacity-100" : "opacity-0"
         }`}
       >

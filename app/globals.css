@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+/* Single-viewport app: nothing should ever scroll. On mobile this also stops
+   iOS's overscroll/rubber-band from briefly showing the fallback color past
+   the edges, and stops the browser from hijacking touch drags as page pans
+   (which was breaking the ripple's tap/drag response). */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
