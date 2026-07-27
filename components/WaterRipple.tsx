@@ -291,7 +291,7 @@ export default function WaterRipple({
   return (
     <canvas
       ref={canvasRef}
-      className={`pointer-events-none fixed inset-0 h-svh w-full ${
+      className={`pointer-events-none fixed inset-0 h-dvh w-full ${
         backgroundImage ? "-z-10" : "z-50"
       }`}
     />
