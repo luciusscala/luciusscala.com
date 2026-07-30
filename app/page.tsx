@@ -9,31 +9,14 @@ const BACKGROUND_SRC = "/abstract.jpg";
 // background in app/layout.tsx) so there's never a flash of an unrelated color.
 const BACKGROUND_FALLBACK = "#0025ce";
 
-type ProjectLink = { label: string; href: string };
-type Project = { name: string; links: ProjectLink[] };
+const GITHUB_URL = "https://github.com/luciusscala";
+// Update to the real profile URL.
+const LINKEDIN_URL = "https://www.linkedin.com/in/luciusscala";
+// Drop the PDF at public/resume.pdf.
+const RESUME_URL = "/resume.pdf";
 
-// Placeholder projects — swap in the real ones.
-const PROJECTS: Project[] = [
-  {
-    name: "Project one",
-    links: [{ label: "Code", href: "#" }],
-  },
-  {
-    name: "Project Two",
-    links: [
-      { label: "Code", href: "#" },
-      { label: "Demo", href: "#" },
-    ],
-  },
-  {
-    name: "Project Three",
-    links: [
-      
-      { label: "Code", href: "#" },
-      { label: "Paper", href: "#" },
-    ],
-  },
-];
+// What I'm working on right now — edit freely.
+const NOW = `Currently a junior at UCSD. I play soccer and code. P.S. drag cursor for effect.`;
 
 export default function Home() {
   const [bgImage, setBgImage] = useState<HTMLImageElement | null>(null);
@@ -83,33 +66,34 @@ export default function Home() {
         <main className="flex flex-1 items-center px-6 py-16 sm:px-10 md:px-14">
           <div className="w-full max-w-xs">
             <h1 className="text-2xl">Lucius Scala</h1>
-            <a
-              href="https://github.com/luciusscala"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-1 inline-block text-sm opacity-70 transition-opacity hover:opacity-100"
-            >
-              [GitHub]
-            </a>
+            <p className="mt-1 space-x-2 text-sm opacity-70">
+              <a
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="transition-opacity hover:opacity-100"
+              >
+                [GitHub]
+              </a>
+              <a
+                href={LINKEDIN_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="transition-opacity hover:opacity-100"
+              >
+                [LinkedIn]
+              </a>
+              <a
+                href={RESUME_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="transition-opacity hover:opacity-100"
+              >
+                [Resume]
+              </a>
+            </p>
 
-            <div className="mt-12 space-y-6 text-sm">
-              {PROJECTS.map((project) => (
-                <div key={project.name}>
-                  <p>{project.name}</p>
-                  <p className="mt-1 space-x-2 opacity-70">
-                    {project.links.map((link) => (
-                      <a
-                        key={link.label}
-                        href={link.href}
-                        className="transition-opacity hover:opacity-100"
-                      >
-                        [{link.label}]
-                      </a>
-                    ))}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <p className="mt-12 text-sm leading-relaxed opacity-90">{NOW}</p>
           </div>
         </main>
 
