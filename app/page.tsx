@@ -16,7 +16,7 @@ const LINKEDIN_URL = "https://www.linkedin.com/in/luciusscala";
 const RESUME_URL = "/resume.pdf";
 
 // What I'm working on right now — edit freely.
-const NOW = `Currently a junior at UCSD. I play soccer and code. ps drag cursor for effect.`;
+const NOW = `Currently a junior at UCSD. I play soccer and code. Drag cursor for effect.`;
 
 export default function Home() {
   const [bgImage, setBgImage] = useState<HTMLImageElement | null>(null);
