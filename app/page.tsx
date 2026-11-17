@@ -10,11 +10,14 @@ const BACKGROUND_SRC = "/abstract.jpg";
 const BACKGROUND_FALLBACK = "#0025ce";
 
 const GITHUB_URL = "https://github.com/luciusscala";
-const CV_URL = "/lucius_scala_cv.pdf";
+const CV_URL = "/cv.pdf";
 
 const SLLAB_GITHUB_URL = "https://github.com/luciusscala/sllab";
 const SLLAB_APP_STORE_URL =
   "https://apps.apple.com/us/app/fixture-management/id6812923949";
+// TODO: point this at the technical writeup once it's published.
+const SLLAB_WRITEUP_URL = "https://github.com/luciusscala/sllab/blob/main/docs/writeup/sllab.pdf";
+const LAST_UPDATED = "November 17, 2026";
 
 // What I'm working on right now — edit freely.
 const NOW = `Currently a junior at UCSD. I play soccer and code.`;
@@ -22,9 +25,14 @@ const NOW = `Currently a junior at UCSD. I play soccer and code.`;
 // Touch-first devices get a static background instead of the ripple shader.
 const TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
 
-const linkClass = "transition-opacity hover:opacity-100";
-const inlineLinkClass =
-  "underline decoration-white/30 underline-offset-2 transition-colors hover:decoration-white/80";
+// Academic-style links: bracketed, no underline, same font as surrounding text.
+function BracketLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a href={href} target="_blank" rel="noreferrer" className="transition-opacity hover:opacity-60">
+      [{children}]
+    </a>
+  );
+}
 
 export default function Home() {
   const [bgImage, setBgImage] = useState<HTMLImageElement | null>(null);
@@ -90,34 +98,26 @@ export default function Home() {
           <div className="w-full max-w-xs">
             <h1 className="text-2xl">Lucius Scala</h1>
             <p className="mt-1 space-x-2 text-sm opacity-70">
-              <a href={GITHUB_URL} target="_blank" rel="noreferrer" className={linkClass}>
-                [GitHub]
-              </a>
-              <a href={CV_URL} target="_blank" rel="noreferrer" className={linkClass}>
-                [CV]
-              </a>
+              <BracketLink href={GITHUB_URL}>GitHub</BracketLink>
+              <BracketLink href={CV_URL}>CV</BracketLink>
             </p>
 
             <p className="mt-12 text-sm leading-relaxed opacity-90">{NOW}</p>
 
             <p className="mt-4 text-sm leading-relaxed opacity-90">
-              Building SLLAB, a platform for running college club sports teams, used daily by
-              UCSD Men&apos;s Club Soccer.{" "}
-              <span className="whitespace-nowrap opacity-80">
-                <a href={SLLAB_GITHUB_URL} target="_blank" rel="noreferrer" className={inlineLinkClass}>
-                  GitHub
-                </a>
-                {" · "}
-                <a href={SLLAB_APP_STORE_URL} target="_blank" rel="noreferrer" className={inlineLinkClass}>
-                  App Store
-                </a>
-              </span>
-            </p>
-
-            <p className="mt-10 text-xs italic opacity-50">
-              {isTouch
-                ? "This site is best experienced on a computer."
-                : "Drag cursor for effect."}
+              Right now, I&apos;m working on <BracketLink href={SLLAB_GITHUB_URL}>sllab</BracketLink>; a
+              software platform that provides the backoffice for college club sport teams, allowing them to be run
+              more like NCAA programs. You can read a technical writeup{" "}
+              <BracketLink href={SLLAB_WRITEUP_URL}>here</BracketLink>, and download my main app: {" "}
+              <BracketLink href={SLLAB_APP_STORE_URL}>Fixture</BracketLink> on the app store. Last
+              updated: {LAST_UPDATED}.
+              {!isTouch && (
+                <>
+                  <br />
+                  <br />
+                  Drag cursor for effect.
+                </>
+              )}
             </p>
           </div>
         </main>
@@ -127,26 +127,14 @@ export default function Home() {
           {!isTouch && (
             <div>
               ripple shader adapted from{" "}
-              <a
-                href="https://www.shadertoy.com/view/wdtyDH"
-                target="_blank"
-                rel="noreferrer"
-                className="underline decoration-white/30 underline-offset-2 transition-colors hover:decoration-white/70"
-              >
-                polygon
-              </a>{" "}
+              <BracketLink href="https://www.shadertoy.com/view/wdtyDH">polygon</BracketLink>
             </div>
           )}
           <div>
             background photo from{" "}
-            <a
-              href="https://commons.wikimedia.org/wiki/File:Macro_of_glass.jpg"
-              target="_blank"
-              rel="noreferrer"
-              className="underline decoration-white/30 underline-offset-2 transition-colors hover:decoration-white/70"
-            >
+            <BracketLink href="https://commons.wikimedia.org/wiki/File:Macro_of_glass.jpg">
               dave croker
-            </a>
+            </BracketLink>
           </div>
         </footer>
       </div>
